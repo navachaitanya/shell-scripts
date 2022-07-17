@@ -4,10 +4,15 @@
 # Company Name (If Applicable):
 # website Name:
 # Follow below steps to run script to setup Apache with your custom domain name
-# wget https://{domain_name}/shell-scripts/apache/setup-apache2-custom-domain.sh
+# wget https://raw.githubusercontent.com/navachaitanya/shell-scripts/master/apache/setup-apache2-with-custom-domain.sh
 # sudo chmod 755 setup-apache2-with-custom-domain.sh
 # ./setup-apache2-custom-domain.sh
+# Run script in single command
+# wget https://raw.githubusercontent.com/navachaitanya/shell-scripts/master/apache/setup-apache2-with-custom-domain.sh; sudo chmod 755 setup-apache2-with-custom-domain.sh; ./setup-apache2-custom-domain.sh
+
 ####################################################################################
+echo "Enter the root password if needed"
+sudo -i
 echo "hello... $USER !"
 echo "This script made only for RPM based Linux like RHEL | CENTOS | Amazon Linux 2"
 echo "Checking if Apache is already installed!"
@@ -30,16 +35,17 @@ read custom_domain_name
 # if $1 not passed, fall back to current directory
 install_root_dir="${1:-${PWD}}"
 apache_webroot="/var/www/html"
+apache_user="www"
 echo $install_root_dir
 echo "printing pwd"
 pwd
 echo "above line is pwd"
-sudo mkdir ${custom_domain_name}
-echo "${custom_domain_name} has been created."
-echo 'change user'
-sudo chown $USER:$USER ${custom_domain_name}
+#sudo mkdir ${custom_domain_name}
+#echo "${custom_domain_name} has been created."
+echo 'Changing user permission to webroot config'
+#sudo chown $USER:$USER ${custom_domain_name}
 sudo touch ${apache_webroot}/index.html
-sudo chown $USER:$USER ${apache_webroot}/index.html
+sudo chown $apache_user:$apache_user ${apache_webroot}/index.html
 echo 'Creating Certbot SSL Certificate'
 sudo certbot certonly -d ${custom_domain_name},${custom_domain_name}.com
 sudo cat >>  ${apache_webroot}/index.html <<EOL
@@ -51,7 +57,7 @@ sudo cat >>  ${apache_webroot}/index.html <<EOL
 EOL
 echo 'Creating virtualhost for ${custom_domain_name}'
 sudo touch ${custom_domain_name}.conf
-sudo chown $USER:$USER /${custom_domain_name}.conf
+sudo chown $apache_user:$apache_user /${custom_domain_name}.conf
 sudo cat >> ${custom_domain_name}.conf <<EOL
 <VirtualHost *:80>
     ServerAdmin webmaster@localhost
@@ -93,7 +99,7 @@ sudo cat >>${custom_domain_name}.conf <<EOL
 	SSLCertificateKeyFile /etc/letsencrypt/live/${custom_domain_name}/privkey.pem
 </VirtualHost>
 EOL
-sudo cat ${install_root_dir}/${custom_domain_name}/${custom_domain_name}.conf
+sudo cat ${install_root_dir}/${custom_domain_name}.conf
 sudo systemctl restart apache2
 echo 'Install Apache and configured Apache with custom domain name'
 echo 'Removing the ShellScript'
