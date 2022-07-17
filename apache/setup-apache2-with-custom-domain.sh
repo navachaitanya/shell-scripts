@@ -18,13 +18,18 @@ then
 else
     echo "Apache already installed"
 fi
-echo 'Initiliazing to create a subdomain folder in the Path "/var/www/"'
-cd /etc/httpd/conf.d/
+echo "Restarting Apache...!"
+service httpd restart
+echo "Apache Restarted"
+echo "---------------"
+echo 'Initiliazing to create a subdomain folder in the Path "/etc/httpd/conf.d/'
+cd /etc/httpd/conf/
 echo 'Enter your custom domain name (Enter domain name without www and with .com only, example: google.com):'
 read custom_domain_name
 ## Get dir name from command line args
 # if $1 not passed, fall back to current directory
 install_root_dir="${1:-${PWD}}"
+apache_webroot="/var/www/html"
 echo $install_root_dir
 echo "printing pwd"
 pwd
@@ -33,11 +38,11 @@ sudo mkdir ${custom_domain_name}
 echo "${custom_domain_name} has been created."
 echo 'change user'
 sudo chown $USER:$USER ${custom_domain_name}
-sudo touch ${custom_domain_name}/index.html
-sudo chown $USER:$USER ${custom_domain_name}/index.html
+sudo touch ${apache_webroot}/index.html
+sudo chown $USER:$USER ${apache_webroot}/index.html
 echo 'Creating Certbot SSL Certificate'
 sudo certbot certonly -d ${custom_domain_name},${custom_domain_name}.com
-sudo cat >>  ${custom_domain_name}/index.html <<EOL
+sudo cat >>  ${apache_webroot}/index.html <<EOL
         <h1>Hello!</h1>
         <h2> Welcome to your ${custom_domain_name} ...!</h2>
         <h3> Your ${custom_domain_name} is working!</h3>
@@ -45,9 +50,9 @@ sudo cat >>  ${custom_domain_name}/index.html <<EOL
         <h5>See you soon.....!</h5>
 EOL
 echo 'Creating virtualhost for ${custom_domain_name}'
-sudo touch ${custom_domain_name}/${custom_domain_name}.conf
-sudo chown $USER:$USER ${custom_domain_name}/${custom_domain_name}.conf
-sudo cat >> ${custom_domain_name}/${custom_domain_name}.conf <<EOL
+sudo touch ${custom_domain_name}.conf
+sudo chown $USER:$USER /${custom_domain_name}.conf
+sudo cat >> ${custom_domain_name}.conf <<EOL
 <VirtualHost *:80>
     ServerAdmin webmaster@localhost
     DocumentRoot "/var/www/html"
@@ -62,7 +67,7 @@ RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,NE,R=permanent]
 </VirtualHost>
 EOL
 
-sudo cat >> ${custom_domain_name}/${custom_domain_name}.conf <<EOL
+sudo cat >>${custom_domain_name}.conf <<EOL
 <VirtualHost *:443>
     ServerName ${custom_domain_name}
     ServerAlias "www.${custom_domain_name}"
@@ -93,4 +98,4 @@ sudo systemctl restart apache2
 echo 'Install Apache and configured Apache with custom domain name'
 echo 'Removing the ShellScript'
 sudo rm -rf setup-apache2-with-custom-domain.sh
-
+echo "Completed script"
