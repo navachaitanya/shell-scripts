@@ -99,7 +99,7 @@ sudo cat >>${custom_domain_name}.conf <<EOL
 </VirtualHost>
 EOL
 sudo cat ${install_root_dir}/${custom_domain_name}.conf
-sudo systemctl restart apache2
+sudo systemctl restart httpd
 echo 'Install Apache and configured Apache with custom domain name'
 echo 'Removing the ShellScript'
 sudo rm -rf setup-apache2-with-custom-domain.sh
