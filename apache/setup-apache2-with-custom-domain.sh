@@ -11,6 +11,7 @@
 # wget https://raw.githubusercontent.com/navachaitanya/shell-scripts/master/apache/setup-apache2-with-custom-domain.sh; sudo chmod 755 setup-apache2-with-custom-domain.sh && ./setup-apache2-with-custom-domain.sh
 
 ####################################################################################
+echo "Starting Script"
 echo "hello... $USER !"
 echo "This script made only for RPM based Linux like RHEL | CENTOS | Amazon Linux 2"
 echo "Checking if Apache is already installed!"
