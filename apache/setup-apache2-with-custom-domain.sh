@@ -6,9 +6,9 @@
 # Follow below steps to run script to setup Apache with your custom domain name
 # wget https://raw.githubusercontent.com/navachaitanya/shell-scripts/master/apache/setup-apache2-with-custom-domain.sh
 # sudo chmod 755 setup-apache2-with-custom-domain.sh
-# ./setup-apache2-custom-domain.sh
+# ./setup-apache2-with-custom-domain.sh
 # Run script in single command
-# wget https://raw.githubusercontent.com/navachaitanya/shell-scripts/master/apache/setup-apache2-with-custom-domain.sh; sudo chmod 755 setup-apache2-with-custom-domain.sh; ./setup-apache2-custom-domain.sh
+# wget https://raw.githubusercontent.com/navachaitanya/shell-scripts/master/apache/setup-apache2-with-custom-domain.sh; sudo chmod 755 setup-apache2-with-custom-domain.sh && ./setup-apache2-with-custom-domain.sh
 
 ####################################################################################
 echo "Enter the root password if needed"
