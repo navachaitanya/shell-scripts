@@ -40,15 +40,15 @@ echo $install_root_dir
 echo "printing pwd"
 pwd
 echo "above line is pwd"
-#sudo mkdir ${custom_domain_name}
-#echo "${custom_domain_name} has been created."
+sudo mkdir ${apache_webroot}/${custom_domain_name}
+echo "${apache_webroot}/${custom_domain_name} has been created."
 echo 'Changing user permission to webroot config'
-#sudo chown $USER:$USER ${custom_domain_name}
-sudo touch ${apache_webroot}/index.html
-sudo chown $apache_user:$apache_user ${apache_webroot}/index.html
+sudo chown $apache_user:$apache_user ${apache_webroot}/${custom_domain_name}
+sudo touch ${apache_webroot}/${custom_domain_name}/index.html
+sudo chown $apache_user:$apache_user ${apache_webroot}/${custom_domain_name}/index.html
 echo 'Creating Certbot SSL Certificate'
-sudo certbot certonly -d ${custom_domain_name},${custom_domain_name}.com
-sudo cat >>  ${apache_webroot}/index.html <<EOL
+sudo certbot certonly -d ${custom_domain_name},www.${custom_domain_name}
+sudo cat >>  ${apache_webroot}/${custom_domain_name}/index.html <<EOL
         <h1>Hello!</h1>
         <h2> Welcome to your ${custom_domain_name} ...!</h2>
         <h3> Your ${custom_domain_name} is working!</h3>
@@ -61,7 +61,7 @@ sudo chown $apache_user:$apache_user /${custom_domain_name}.conf
 sudo cat >> ${custom_domain_name}.conf <<EOL
 <VirtualHost *:80>
     ServerAdmin webmaster@localhost
-    DocumentRoot "/var/www/html"
+    DocumentRoot "${apache_webroot}/${custom_domain_name}"
     ServerName ${custom_domain_name}
     ServerAlias www.${custom_domain_name}
     ProxyPassMatch "^/nes/(.*)$" "http://localhost:8080/nes/$1"
@@ -81,7 +81,7 @@ sudo cat >>${custom_domain_name}.conf <<EOL
 	ErrorLog \${APACHE_LOG_DIR}/${custom_domain_name}.error.log
 	CustomLog \${APACHE_LOG_DIR}/${custom_domain_name}.access.log combined
 	DirectoryIndex index.html index.cgi index.php
-	<Directory $install_root_dir/${custom_domain_name}/public/>
+	<Directory ${apache_webroot}/${custom_domain_name}>
 		Options Indexes FollowSymLinks
 		AllowOverride All
 		Require all granted
